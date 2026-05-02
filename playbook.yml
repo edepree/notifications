@@ -161,7 +161,7 @@
         owner: caddy
         group: caddy
         mode: "0644"
-      notify: Reload Caddy
+      notify: Restart Caddy
 
     - name: Enable Caddy Service
       ansible.builtin.systemd:
@@ -174,11 +174,6 @@
       ansible.builtin.systemd:
         name: ntfy
         state: restarted
-
-    - name: Reload Caddy
-      ansible.builtin.systemd:
-        name: caddy
-        state: reloaded
 
     - name: Restart Caddy
       ansible.builtin.systemd:
