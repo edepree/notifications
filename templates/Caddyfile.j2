@@ -7,10 +7,5 @@
     }
   }
 
-  reverse_proxy 127.0.0.1:8080 {
-    transport http {
-      idle_timeout 30s
-      keep_host_header true
-    }
-  }
+  reverse_proxy unix//run/ntfy/ntfy.sock
 }

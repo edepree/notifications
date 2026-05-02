@@ -1,5 +1,7 @@
 base-url: "https://{{ domain }}"
-listen-http: "127.0.0.1:8080"
+listen-http: "-"
+listen-unix: "/run/ntfy/ntfy.sock"
+listen-unix-mode: 0660
 web-root: "disable"
 
 attachment-cache-dir: "/var/cache/ntfy/attachments"
