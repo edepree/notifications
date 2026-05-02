@@ -1,0 +1,12 @@
+base-url: "https://{{ domain }}"
+listen-http: "127.0.0.1:8080"
+web-root: "disable"
+
+attachment-cache-dir: "/var/cache/ntfy/attachments"
+cache-file: "/var/cache/ntfy/cache.db"
+
+auth-file: "/var/lib/ntfy/user.db"
+auth-default-access: "deny-all"
+
+behind-proxy: true
+keepalive-interval: "45s"
