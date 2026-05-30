@@ -96,14 +96,6 @@
         state: present
         update_cache: true
 
-    - name: Create ntfy Socket Directory
-      ansible.builtin.file:
-        path: /run/ntfy
-        state: directory
-        owner: ntfy
-        group: ntfy
-        mode: "0750"
-
     - name: Persist ntfy Socket Directory Across Reboots
       ansible.builtin.copy:
         dest: /etc/tmpfiles.d/ntfy.conf
@@ -112,21 +104,12 @@
         mode: "0644"
         content: "d /run/ntfy 0750 ntfy ntfy -\n"
 
-    - name: Create ntfy Log File
-      ansible.builtin.copy:
-        content: ""
-        dest: /var/log/ntfy.log
-        force: false
-        owner: ntfy
-        group: ntfy
-        mode: "0600"
-
     - name: Deploy ntfy Server Configuration
       ansible.builtin.template:
         src: server.yml.j2
         dest: /etc/ntfy/server.yml
-        owner: root
-        group: root
+        owner: ntfy
+        group: ntfy
         mode: "0644"
       notify: Restart Ntfy
 
