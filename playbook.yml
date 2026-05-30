@@ -98,7 +98,7 @@
         uris: https://archive.ntfy.sh/apt
         suites: stable
         components: main
-        architectures: amd64
+        architectures: "amd64 arm64"
         signed_by: /usr/share/keyrings/ntfy-archive-keyring.gpg
 
     - name: Install ntfy
