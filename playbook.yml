@@ -155,7 +155,7 @@
 
     - name: Add Caddy APT Repository
       ansible.builtin.apt_repository:
-        repo: "deb [signed-by=/usr/share/keyrings/caddy-archive-keyring.gpg] https://dl.cloudsmith.io/public/caddy/stable/deb/ any-version main"
+        repo: "deb [signed-by=/usr/share/keyrings/caddy-archive-keyring.gpg] https://dl.cloudsmith.io/public/caddy/stable/deb/debian {{ ansible_distribution_release }} main"
         filename: caddy
         state: present
 
