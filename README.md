@@ -7,21 +7,13 @@ An Ansible playbook that deploys a self-hosted [ntfy](https://ntfy.sh) notificat
 - An Ubuntu 26.04 Endpoint
 - Preconfigured DNS A Record
 
-## Setup
+## Usage
 
 ```sh
 ./setup.sh
 ```
 
-This installs [uv](https://github.com/astral-sh/uv), sets up the Python environment, and installs Ansible Galaxy collections.
-
-## Usage
-
-```sh
-uv run ansible-playbook playbook.yml -e domain=notifications.example.com
-```
-
-The `domain` variable defaults to `ntfy.example.com`. Override it with `-e` or in a host vars file.
+This installs [uv](https://github.com/astral-sh/uv), sets up the Python environment, installs Ansible Galaxy collections, and runs the Ansible playbook with the domain provided by the user (defaults to `ntfy.example.com`).
 
 ## Post-Deployment
 
