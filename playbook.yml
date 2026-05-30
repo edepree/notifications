@@ -13,6 +13,11 @@
         name: ufw
         state: present
 
+    - name: Install python3-debian for deb822_repository
+      ansible.builtin.apt:
+        name: python3-debian
+        state: present
+
     - name: Set ufw Default Deny Incoming
       community.general.ufw:
         default: deny
@@ -81,6 +86,12 @@
         enabled: true
         state: started
 
+    - name: Download ntfy APT GPG Key
+      ansible.builtin.get_url:
+        url: https://archive.ntfy.sh/apt/keyring.gpg
+        dest: /usr/share/keyrings/ntfy-archive-keyring.gpg
+        mode: "0644"
+
     - name: Add ntfy APT Repository
       ansible.builtin.deb822_repository:
         name: ntfy
@@ -88,7 +99,7 @@
         suites: stable
         components: main
         architectures: amd64
-        signed_by: https://archive.ntfy.sh/apt/keyring.gpg
+        signed_by: /usr/share/keyrings/ntfy-archive-keyring.gpg
 
     - name: Install ntfy
       ansible.builtin.apt:
@@ -135,13 +146,17 @@
         enabled: true
         state: started
 
+    - name: Download Caddy APT GPG Key
+      ansible.builtin.get_url:
+        url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
+        dest: /usr/share/keyrings/caddy-archive-keyring.gpg
+        mode: "0644"
+
     - name: Add Caddy APT Repository
-      ansible.builtin.deb822_repository:
-        name: caddy-stable
-        uris: https://dl.cloudsmith.io/public/caddy/stable/deb/debian
-        suites: any-version
-        components: main
-        signed_by: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/caddy-archive-keyring.gpg] https://dl.cloudsmith.io/public/caddy/stable/deb/ any-version main"
+        filename: caddy
+        state: present
 
     - name: Install Caddy Server
       ansible.builtin.apt:
