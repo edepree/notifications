@@ -12,4 +12,4 @@ uv run ansible-galaxy install -r requirements.yml
 
 # run playbook
 read -rp "Domain [ntfy.example.com]: " DOMAIN
-uv run ansible-playbook playbook.yml -e "domain=${DOMAIN:-ntfy.example.com}"
+uv run ansible-playbook playbook.yml -i localhost, -e "domain=${DOMAIN:-ntfy.example.com}"
