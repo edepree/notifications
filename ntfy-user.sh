@@ -24,7 +24,7 @@ MODE="$3"
 
 # create user if it doesn't exist
 if ! ntfy user list | grep -q "^user ${USER_NAME} "; then
-    echo "Creating user: ${USER_NAME}"
+    echo "Creating User: ${USER_NAME}"
 
     if [[ "$MODE" == "admin" ]]; then
         NTFY_PASSWORD="$PASSWORD" \
@@ -71,10 +71,3 @@ case "$MODE" in
         usage
         ;;
 esac
-
-echo
-echo "Current user configuration:"
-ntfy user list
-echo
-echo "Access rules:"
-ntfy access "$USER_NAME"
