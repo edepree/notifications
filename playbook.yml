@@ -142,7 +142,7 @@
         uris: https://dl.cloudsmith.io/public/caddy/stable/deb/debian
         suites: any-version
         components: main
-        signedBy: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
+        signed_by: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
         types: deb
 
     - name: Install Caddy Server
