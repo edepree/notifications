@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-USER="$1"
-PASSWORD="$2"
-MODE="$3"        # all | topic
-ACCESS="$4"      # read | write | rw
-TOPIC="${5:-}"
-
-if [[ -z "$USER" || -z "$PASSWORD" || -z "$MODE" || -z "$ACCESS" ]]; then
+if [[ $# -lt 4 ]]; then
   echo "Usage:"
   echo "  $0 <user> <password> <all|topic> <read|write|rw> [topic]"
   exit 1
 fi
+
+USER="$1"
+PASSWORD="$2"
+MODE="$3"
+ACCESS="$4"
+TOPIC="${5:-}"
 
 echo "Creating user: $USER"
 ntfy user add "$USER" || true
