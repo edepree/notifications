@@ -1,6 +1,7 @@
 ---
 - name: Deploy Ntfy With Caddy
-  hosts: all
+  hosts: localhost
+  connection: local
   become: true
 
   vars:

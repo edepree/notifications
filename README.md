@@ -18,7 +18,7 @@ This installs [uv](https://github.com/astral-sh/uv), sets up the Python environm
 ## Usage
 
 ```sh
-uv run ansible-playbook -i <host>, playbook.yml -e domain=notifications.example.com
+uv run ansible-playbook playbook.yml -e domain=notifications.example.com
 ```
 
 The `domain` variable defaults to `ntfy.example.com`. Override it with `-e` or in a host vars file.
