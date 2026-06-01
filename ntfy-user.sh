@@ -4,70 +4,104 @@ set -euo pipefail
 usage() {
     cat <<EOF
 Usage:
-  $0 USER PASSWORD admin
-  $0 USER PASSWORD all <ro|wo|rw>
-  $0 USER PASSWORD topic <ro|wo|rw> TOPIC
+  $0 USERNAME admin
+  $0 USERNAME all <ro|wo|rw>
+  $0 USERNAME topic <ro|wo|rw> TOPIC
 
 Examples:
-  $0 backupbot SecretPass admin
-  $0 reader SecretPass all ro
-  $0 appuser SecretPass topic rw alerts
+  $0 backupbot admin
+  $0 reader all ro
+  $0 appuser topic rw alerts
+
+The password will be prompted for securely.
 EOF
     exit 1
 }
 
-[[ $# -lt 3 ]] && usage
+cleanup() {
+    unset PASSWORD PASSWORD_CONFIRM
+}
+trap cleanup EXIT
 
-USER_NAME="$1"
-PASSWORD="$2"
-MODE="$3"
+validate_access() {
+    case "$1" in
+        ro|wo|rw) ;;
+        *)
+            echo "Error: access must be one of: ro, wo, rw" >&2
+            exit 1
+            ;;
+    esac
+}
 
-# create user if it doesn't exist
-if ! ntfy user list | grep -q "^user ${USER_NAME} "; then
-    echo "Creating User: ${USER_NAME}"
+[[ $# -lt 2 ]] && usage
+
+USERNAME="$1"
+MODE="$2"
+
+# Prompt for password securely
+read -r -s -p "Password: " PASSWORD
+echo
+read -r -s -p "Confirm password: " PASSWORD_CONFIRM
+echo
+
+if [[ "$PASSWORD" != "$PASSWORD_CONFIRM" ]]; then
+    echo "Error: passwords do not match" >&2
+    exit 1
+fi
+
+# Create user if it doesn't exist
+if ! ntfy user list | grep -Fq "user ${USERNAME} "; then
+    echo "Creating user: ${USERNAME}"
 
     if [[ "$MODE" == "admin" ]]; then
         NTFY_PASSWORD="$PASSWORD" \
-            ntfy user add --role=admin "$USER_NAME"
+            ntfy user add --role=admin "$USERNAME"
     else
         NTFY_PASSWORD="$PASSWORD" \
-            ntfy user add "$USER_NAME"
+            ntfy user add "$USERNAME"
     fi
 else
     echo "User exists, updating password"
 
     NTFY_PASSWORD="$PASSWORD" \
-        ntfy user change-pass "$USER_NAME"
+        ntfy user change-pass "$USERNAME"
 
     if [[ "$MODE" == "admin" ]]; then
-        ntfy user change-role "$USER_NAME" admin
+        ntfy user change-role "$USERNAME" admin
     fi
 fi
 
 case "$MODE" in
     admin)
+        [[ $# -eq 2 ]] || usage
         echo "Granted admin role (full access to all topics)"
         ;;
 
     all)
-        [[ $# -eq 4 ]] || usage
+        [[ $# -eq 3 ]] || usage
 
-        ACCESS="$4"
+        ACCESS="$3"
+        validate_access "$ACCESS"
+
         echo "Granting ${ACCESS} access to all topics"
-        ntfy access "$USER_NAME" "*" "$ACCESS"
+        ntfy access "$USERNAME" "*" "$ACCESS"
         ;;
 
     topic)
-        [[ $# -eq 5 ]] || usage
+        [[ $# -eq 4 ]] || usage
 
-        ACCESS="$4"
-        TOPIC="$5"
+        ACCESS="$3"
+        TOPIC="$4"
+
+        validate_access "$ACCESS"
 
         echo "Granting ${ACCESS} access to topic ${TOPIC}"
-        ntfy access "$USER_NAME" "$TOPIC" "$ACCESS"
+        ntfy access "$USERNAME" "$TOPIC" "$ACCESS"
         ;;
 
     *)
         usage
         ;;
 esac
+
+echo "Done."
